@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
+
     //here we need to specify what class is for; we have to pass the type of primary key
 
     //SELECT * FROM student WHERE email = ?
@@ -20,5 +21,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     Optional<Player> findPlayerByEmail(String email);
 
     Optional<Player> findPlayerByExternalId(String externalId);
+
     //Optional<Player> findPlayerById(Long id);
+
 }

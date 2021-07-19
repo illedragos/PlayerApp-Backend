@@ -1,16 +1,30 @@
 package com.example.demo.player;
 
 
+import lombok.Builder;
+
 import javax.persistence.Transient;
 import java.time.LocalDate;
+import java.util.Objects;
+
 
 public class PlayerResponseDTO {
     private String name;
     private Integer age;//age will not be a column, it will be calculated
     private LocalDate dateOfBirth;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     private String email;
     private RankEnum rank;
     private String externalId;
+    private Long id;
 
     public PlayerResponseDTO() {
     }
@@ -70,5 +84,18 @@ public class PlayerResponseDTO {
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerResponseDTO that = (PlayerResponseDTO) o;
+        return name.equals(that.name) && age.equals(that.age) && dateOfBirth.equals(that.dateOfBirth) && email.equals(that.email) && rank == that.rank && externalId.equals(that.externalId) && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, dateOfBirth, email, rank, externalId, id);
     }
 }

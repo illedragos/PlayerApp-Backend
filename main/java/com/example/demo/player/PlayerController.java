@@ -22,17 +22,13 @@ public class PlayerController {
 
     @Autowired
     public PlayerController(PlayerService playerService) {
-
         //this.playerService = new PlayerService();
         //we should avoid this and use dependecy injection
         //we put autowired so playerService will be 'magicaly' instantiated
         //we also need to tell that PlayerService is a class that needs to be instanciated (Spring bean)
         //we put @Service on PlayerService
-
         this.playerService = playerService;
-
     }
-
 
     @GetMapping
     public List<PlayerResponseDTO> getPlayers() {
@@ -49,14 +45,26 @@ public class PlayerController {
         playerService.deletePlayer(externalId);
     }
 
-    @PutMapping(path = "/{externalId}")
-    public void updatePlayer(
-            @PathVariable("externalId") String externalId,
-           @RequestBody PlayerRequestDTO playerRequestDTO){
+    @PutMapping(path = "/{id}")
+    public void updatePlayerWithId(
+            @PathVariable("id") Long id,
+            @RequestBody PlayerRequestDTO playerRequestDTO){
 
-        playerService.updatePlayer(externalId,playerRequestDTO);
-
+        playerService.updatePlayerWithId(id, playerRequestDTO);
     }
 
+    @GetMapping("{id}")
+    PlayerResponseDTO getPlayer(@PathVariable Long id) {
+        PlayerResponseDTO playerRequestDTO = playerService.findById(id);
+        return playerRequestDTO;
+    }
+
+//    @PutMapping(path = "/{externalId}")
+//    public void updatePlayer(
+//            @PathVariable("externalId") String externalId,
+//           @RequestBody PlayerRequestDTO playerRequestDTO){
+//
+//        playerService.updatePlayer(externalId,playerRequestDTO);
+//    }
 
 }

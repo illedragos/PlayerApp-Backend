@@ -1,9 +1,12 @@
 package com.example.demo.player;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
+
 
 @Entity
 @Table
@@ -18,6 +21,7 @@ public class Player {
             strategy = GenerationType.SEQUENCE,
             generator = "player_sequence"
     )
+
     private Long id;
 
     private String externalId = UUID.randomUUID().toString();

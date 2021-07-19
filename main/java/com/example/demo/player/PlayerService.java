@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 //PlayerServices has to be instanciated
@@ -24,15 +25,18 @@ public class PlayerService {
 
     public List<PlayerResponseDTO> getPlayers() {
         List<Player> playerEntities = playerRepository.findAll();
-        List<PlayerResponseDTO> responseList = new ArrayList<>();
-        for (Player player : playerEntities) {
-            PlayerResponseDTO responseDTO = toResponseDTO(player);
-            responseList.add(responseDTO);
-        }
-        return responseList;
-        // return playerEntities.stream().
-//                map(player -> toResponseDTO(player)).collect(Collectors.toList());
+        //Player byId = playerRepository.getById(12L);
+//        List<PlayerResponseDTO> responseList = new ArrayList<>();
+//
+////        for (Player player : playerEntities) {
+////            PlayerResponseDTO responseDTO = toResponseDTO(player);
+////            responseList.add(responseDTO);
+////        }
+//////        return responseList;
+         return playerEntities.stream().
+                map(this::toResponseDTO).collect(Collectors.toList());
     }
+
 
     public void addNewPlayer(PlayerRequestDTO playerRequestDTO) {
         if (mailAlreadyExists(playerRequestDTO.getEmail())) {
@@ -57,14 +61,30 @@ public class PlayerService {
                         "Player with id" + externalId + " does not exists")
                 );
 
-            player.setName(playerRequestDTO.getName());
-            player.setRank(RankEnum.get(playerRequestDTO.getRank()));
-            player.setDateOfBirth(playerRequestDTO.getDateOfBirth());
-            player.setEmail(playerRequestDTO.getEmail());
-            playerRepository.save(player);
+        player.setName(playerRequestDTO.getName());
+        player.setRank(RankEnum.get(playerRequestDTO.getRank()));
+        player.setDateOfBirth(playerRequestDTO.getDateOfBirth());
+        player.setEmail(playerRequestDTO.getEmail());
+        playerRepository.save(player);
+
     }
 
-    private Player toEntity(PlayerRequestDTO dto) {
+    @Transactional
+    public void updatePlayerWithId(Long id, PlayerRequestDTO playerRequestDTO) {
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Player with id" + id + " does not exists")
+                );
+
+        player.setName(playerRequestDTO.getName());
+        player.setRank(RankEnum.get(playerRequestDTO.getRank()));
+        player.setDateOfBirth(playerRequestDTO.getDateOfBirth());
+        player.setEmail(playerRequestDTO.getEmail());
+        playerRepository.save(player);
+
+    }
+
+    public Player toEntity(PlayerRequestDTO dto) {
         Player entity = new Player();
         entity.setEmail(dto.getEmail());
         entity.setName(dto.getName());
@@ -79,14 +99,21 @@ public class PlayerService {
         responseDTO.setEmail(entity.getEmail());
         responseDTO.setRank(entity.getRank());
         responseDTO.setName(entity.getName());
+        responseDTO.setId(entity.getId());
         responseDTO.setDateOfBirth(entity.getDateOfBirth());
         responseDTO.setExternalId(entity.getExternalId());
         return responseDTO;
     }
 
+    public PlayerResponseDTO findById(Long id) {
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find player by id " + id));
+        return toResponseDTO(player);
+    }
+
     private Boolean mailAlreadyExists(String email) {
         Optional<Player> playerOptional = playerRepository
-                    .findPlayerByEmail(email);
-            return playerOptional.isPresent();
+                .findPlayerByEmail(email);
+        return playerOptional.isPresent();
     }
 }
