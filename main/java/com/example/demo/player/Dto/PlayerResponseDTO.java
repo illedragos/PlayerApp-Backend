@@ -1,16 +1,11 @@
 package com.example.demo.player;
-
-
-import lombok.Builder;
-
-import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.util.Objects;
 
 
 public class PlayerResponseDTO {
     private String name;
-    private Integer age;//age will not be a column, it will be calculated
+    private Integer age;
     private LocalDate dateOfBirth;
 
     public Long getId() {

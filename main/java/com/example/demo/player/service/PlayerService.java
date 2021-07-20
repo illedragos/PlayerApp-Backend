@@ -25,14 +25,6 @@ public class PlayerService {
 
     public List<PlayerResponseDTO> getPlayers() {
         List<Player> playerEntities = playerRepository.findAll();
-        //Player byId = playerRepository.getById(12L);
-//        List<PlayerResponseDTO> responseList = new ArrayList<>();
-//
-////        for (Player player : playerEntities) {
-////            PlayerResponseDTO responseDTO = toResponseDTO(player);
-////            responseList.add(responseDTO);
-////        }
-//////        return responseList;
          return playerEntities.stream().
                 map(this::toResponseDTO).collect(Collectors.toList());
     }
@@ -52,21 +44,6 @@ public class PlayerService {
                 .orElseThrow(() -> new IllegalStateException(
                         "Player with id" + externalId + " does not exists"));
         playerRepository.delete(playerToDelete);
-    }
-
-    @Transactional
-    public void updatePlayer(String externalId, PlayerRequestDTO playerRequestDTO) {
-        Player player = playerRepository.findPlayerByExternalId(externalId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Player with id" + externalId + " does not exists")
-                );
-
-        player.setName(playerRequestDTO.getName());
-        player.setRank(RankEnum.get(playerRequestDTO.getRank()));
-        player.setDateOfBirth(playerRequestDTO.getDateOfBirth());
-        player.setEmail(playerRequestDTO.getEmail());
-        playerRepository.save(player);
-
     }
 
     @Transactional
