@@ -1,18 +1,17 @@
 package com.example.demo.player;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.demo.controller.PlayerController;
+import com.example.demo.player.Dto.PlayerRequestDTO;
+import com.example.demo.player.Dto.PlayerResponseDTO;
+import com.example.demo.player.model.RankEnum;
+import com.example.demo.player.service.PlayerService;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +19,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -115,17 +108,6 @@ class PlayerControllerTest2 {
     @Test
     void deletePlayer() throws Exception {
 
-//        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete(
-//                "http://localhost:8080/api/v1/player/{externalId}"
-//        )
-//                .contentType(
-//                        MediaType.APPLICATION_JSON
-//                );
-//        mockMvc.perform(requestBuilder)
-//                .andExpect( status().isOk());
-//        verify(playerService).deletePlayer("externalId");
-
-
         String extid = "extid";
         mockMvc.perform(MockMvcRequestBuilders.delete("http://localhost:8080/api/v1/player/{externalId}",extid))
                 .andExpect(status().isOk());
@@ -137,8 +119,6 @@ class PlayerControllerTest2 {
     void updatePlayerWithId() throws Exception {
         PlayerRequestDTO playerRequestDTO1 = new PlayerRequestDTO
                 ("Dragos", LocalDate.of(1987, Month.JUNE, 22), "dragosawfawfh@me.com", "PRO");
-
-       // when(playerService.updatePlayerWithId(1L,playerRequestDTO1)).thenReturn(Optional.empty());
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put(
                 "http://localhost:8080/api/v1/player/{id}",1L
@@ -162,17 +142,13 @@ class PlayerControllerTest2 {
         responseDTO1.setName("Dragos");
         responseDTO1.setId(1L);
         responseDTO1.setEmail("dargos@mee.com");
-
         Mockito.when(playerService.findById(id)).thenReturn(responseDTO1);
-
 
         mockMvc.perform((MockMvcRequestBuilders.get("http://localhost:8080/api/v1/player/1")))
             .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(responseDTO1), true));
 
         verify(playerService, times(1)).findById(responseDTO1.getId());
-
-
 
     }
 }

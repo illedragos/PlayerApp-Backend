@@ -1,5 +1,8 @@
-package com.example.demo.player;
+package com.example.demo.player.initializer;
 
+import com.example.demo.player.RankEnum;
+import com.example.demo.player.model.Player;
+import com.example.demo.player.repository.PlayerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;

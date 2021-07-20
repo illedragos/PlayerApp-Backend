@@ -1,5 +1,9 @@
 package com.example.demo.player;
-
+import com.example.demo.controller.PlayerController;
+import com.example.demo.player.Dto.PlayerRequestDTO;
+import com.example.demo.player.Dto.PlayerResponseDTO;
+import com.example.demo.player.model.RankEnum;
+import com.example.demo.player.service.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -31,7 +34,6 @@ class PlayerControllerTest {
 
     @BeforeEach
     void setUp() {
-//        playerService = new PlayerService(playerRepository);
 
     }
 
@@ -44,8 +46,6 @@ class PlayerControllerTest {
         responseDTO1.setRank(RankEnum.PRO);
         responseDTO1.setName("Dragoshell");
         responseDTO1.setId(40L);
-//        responseDTO.setDateOfBirth();
-//        responseDTO.setExternalId(entity.getExternalId());
 
         PlayerResponseDTO responseDTO2 = new PlayerResponseDTO();
         responseDTO2.setAge(24);
@@ -76,7 +76,6 @@ class PlayerControllerTest {
 
         assertEquals(playerRequestDTO,playerRequestDTOArgumentCaptor.getValue());
 
-//      when(playerService.findById(id)).thenReturn(responseDTO1);
     }
 
     @Test
@@ -84,10 +83,8 @@ class PlayerControllerTest {
 
            String externalId="extId";
            ArgumentCaptor<String> stringCapture = ArgumentCaptor.forClass(String.class);
-
            playerController.deletePlayer(externalId);
            verify(playerService).deletePlayer(stringCapture.capture());
-
            assertEquals(externalId, stringCapture.getValue());                                                   
     }
 
@@ -95,14 +92,11 @@ class PlayerControllerTest {
     void updatePlayerWithId() {
         PlayerRequestDTO playerRequestDTO1 = new PlayerRequestDTO
                 ("Dragos", LocalDate.of(1987, Month.JUNE, 22), "dragosawfawfh@me.com", "PRO");
-
         Long id = 1L;
         ArgumentCaptor<PlayerRequestDTO> playerArgumentCaptor = ArgumentCaptor.forClass(PlayerRequestDTO.class);
         ArgumentCaptor<Long> longCapture = ArgumentCaptor.forClass(Long.class);
-
         playerController.updatePlayerWithId(id, playerRequestDTO1);
         verify(playerService).updatePlayerWithId(longCapture.capture(), playerArgumentCaptor.capture());
-
         assertEquals(id, longCapture.getValue());
         assertEquals(playerRequestDTO1, playerArgumentCaptor.getValue());
 
@@ -110,23 +104,14 @@ class PlayerControllerTest {
 
     @Test
     void getPlayer() {
-
         Long id =8L;
         PlayerResponseDTO responseDTO1 = new PlayerResponseDTO();
         responseDTO1.setAge(20);
         responseDTO1.setEmail("dargos@mee.com");
         responseDTO1.setRank(RankEnum.PRO);
-
         when(playerService.findById(id)).thenReturn(responseDTO1);
-
         PlayerResponseDTO responseExpected = playerController.getPlayer(id);
         assertEquals(responseDTO1,responseExpected);
 
-//        ArgumentCaptor<PlayerRequestDTO> playerArgumentCaptor = ArgumentCaptor.forClass(PlayerRequestDTO.class);
-//        ArgumentCaptor<Long> longCapture = ArgumentCaptor.forClass(Long.class);
-//        playerController.getPlayer(id);
-//        verify(playerService).findById(longCapture.capture());
-//        assertEquals(id,longCapture.getValue());
-  
     }
 }
